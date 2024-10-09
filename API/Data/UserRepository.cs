@@ -14,7 +14,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
 {
     public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
     {
-        var query = context.AppUsers.AsQueryable();
+        var query = context.Users.AsQueryable();
 
         query = query.Where(x => x.UserName != userParams.CurrentUsername);
 
@@ -38,7 +38,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
 
     public async Task<MemberDto?> GetMemberAsync(string username)
     {
-        return await context.AppUsers
+        return await context.Users
             .Where(x => x.UserName == username)
             .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
@@ -46,19 +46,19 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
 
     public async Task<AppUser?> GetUserByIdAsync(int id)
     {
-        return await context.AppUsers.FindAsync(id);
+        return await context.Users.FindAsync(id);
     }
 
     public async Task<AppUser?> GetUserByUsernameAsync(string username)
     {
-        return await context.AppUsers
+        return await context.Users
             .Include(x => x.Photos)
             .SingleOrDefaultAsync(x => x.UserName == username);
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
-        return await context.AppUsers
+        return await context.Users
             .Include(x => x.Photos)
             .ToListAsync();
     }
